@@ -1,0 +1,84 @@
+ <!DOCTYPE html>
+<html>
+	<body>
+		<p>
+			Start new game:
+			<input type="button" class="gameStart" value="five" />
+			<input type="button" class="gameStart" value="seven" />
+			<input type="button" class="gameStart" value="nine" />
+		</p>
+		
+		<p id="inputZone"></p>
+		
+		<p>
+			<input type="button" id="btnFound" value="found" />
+			<input type="button" id="btnNotFound" value="notFound" />
+		</p>
+		
+		<p id="infoZone"></p>
+		
+		<script src="gs hangman solver.js"></script>
+		<script>
+			var letterInput = '<input type="text" maxlength="1" />';
+			[...document.querySelectorAll('.gameStart')].forEach(btnGameStart => {
+				btnGameStart.addEventListener('click', () => {
+					document.querySelector('#inputZone').innerHTML = letterInput + letterInput + letterInput + letterInput + letterInput;
+					if (btnGameStart.value == 'seven')
+						document.querySelector('#inputZone').innerHTML += letterInput + letterInput;
+					else if (btnGameStart.value == 'nine')
+						document.querySelector('#inputZone').innerHTML += letterInput + letterInput + letterInput + letterInput;
+						
+					//bindNextEvent(); //no likey
+					
+					setInfo(startGame(btnGameStart.value));
+				});
+			});
+			
+			document.querySelector('#btnFound').addEventListener('click', () => {
+				var currentGuess = Array.from([...document.querySelectorAll('input[type="text"]')], letterInput => letterInput.value ? letterInput.value : '.').join('');
+				processFound(currentGuess);
+				setInfo(calculateNextGuess());
+			});
+			document.querySelector('#btnNotFound').addEventListener('click', () => {
+				processNotFound(document.querySelector('#infoZone strong').innerText);
+				setInfo(calculateNextGuess());
+			});
+			
+			function bindNextEvent() {
+				document.querySelectorAll('input[type="text"]').forEach(txtInput => {
+					txtInput.addEventListener('keyup', (e) => {
+						if (e.which < 48 || e.which > 90)
+							return;
+					
+						if (e.target.nextElementSibling) {
+							e.target.nextElementSibling.focus();
+						}
+					});
+				});
+			}
+			
+			function setInfo(txtInfo) {
+				document.querySelector('#infoZone').innerHTML = txtInfo;
+			}
+
+			document.querySelector('.gameStart[value="five"]').click();
+		</script>
+		
+		<style>
+			body {
+				font-family: sans-serif;
+				margin-top: 10rem;
+				text-align: center;
+				
+				background-color: #181818;
+				color: #fff;
+			}
+		
+			input[type="text"] {
+				width: 20px;
+				margin-right: 1rem;
+				text-align: center;
+			}
+		</style>
+	</body>
+</html>
